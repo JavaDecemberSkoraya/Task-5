@@ -16,6 +16,7 @@ public class UserDaoImp implements UserDao {
 
    @Override
    public void add(User user) {
+
       sessionFactory.getCurrentSession().save(user);
    }
 
@@ -24,6 +25,24 @@ public class UserDaoImp implements UserDao {
    public List<User> listUsers() {
       TypedQuery<User> query=sessionFactory.getCurrentSession().createQuery("from User");
       return query.getResultList();
+   }
+
+   @Override
+   public User findeOwner(String car_model, int car_series){
+         TypedQuery <User> findUserQuery = sessionFactory.getCurrentSession()
+                 .createQuery("FROM User u JOIN FETCH u.car c where c.model = :carModel AND c.serias = :carSeries").
+                 setParameter("carModel", car_model)
+                 .setParameter("carSeries", car_series);
+         List <User> findUser = findUserQuery.getResultList();
+         if (!findUser.isEmpty()){
+            System.out.println("User find!");
+            for (User user: findUser){
+               System.out.println(user.getFirstName());
+               return user;
+            }
+
+         }
+      return null;
    }
 
 }
